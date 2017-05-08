@@ -1,8 +1,11 @@
+import java.util.*;
+
 boolean isDone = false;
 int[] sudoku;
+Solver solver;
 
 void setup() {
-  size(800,400);
+  size(800,700);
   textSize(20);
   sudoku = new int[81];
   
@@ -10,14 +13,14 @@ void setup() {
   startRandom(5);
   
   scale(0.8);
-  drawGrid();
+  drawGrid(sudoku);
   
   translate(480,0);
   
-  boolean solved = solve();
-
+  //boolean solved = solve();
+  solver = new Solver(sudoku);
   
-  drawGrid();
+  //drawGrid();
   
   println();
   println("in setup, isValid: "+isValid(sudoku));
@@ -25,11 +28,28 @@ void setup() {
 }
 
 void draw(){
+  pushMatrix();
+  scale(0.8);
+  translate(480,0);
+  solver.step();
+  drawGrid(sudoku);
+  popMatrix();
   
+  pushMatrix();
+  
+  translate(0, 400); 
+  scale(0.4);
+  
+  for (int[] solution : solver.solutions) {
+    drawGrid(solution);
+    translate(500,0);
+  }
+
+  popMatrix();
 }
 
 
-void drawGrid(){
+void drawGrid(int[] sudoku){
   int[][] grid = makeGrid(sudoku);
   pushStyle();
   for(int i=0; i<9; i++)
